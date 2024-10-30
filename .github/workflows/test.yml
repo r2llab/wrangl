@@ -24,9 +24,6 @@ jobs:
     - name: Install package
       run: |
         pip install -e .[dev]
-    - name: Install RL
-      run: |
-        USE_CUDA=0 pip install -e .[rl]
     - name: Run tests
       run: |
         python -m wrangl.interactive.cmd autotest
@@ -36,5 +33,4 @@ jobs:
     - name: Deploy docs
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/build
+        github_token: ${{ secrets.GITHUB_TOKEN }} publish_dir: ./docs/build
