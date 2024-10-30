@@ -26,7 +26,7 @@ class SupervisedModel(BaseModel):
 
     def get_callbacks(self):
         """
-        Returns a list of `pytorch_lightning.callbacks.Callback`s to use for training.
+        Returns a list of `lightning.pytorch.callbacks.Callback`s to use for training.
         """
         callbacks = []
         if self.hparams.git.enable:
@@ -144,7 +144,7 @@ class SupervisedModel(BaseModel):
         """
         One training step in PytorchLightning.
         You should not have to modify this.
-        For more information, see `pytorch_lightning.training_step`.
+        For more information, see `lightning.training_step`.
         """
         feat = self.featurize(batch)
         out = self.forward(feat, batch)
@@ -158,7 +158,6 @@ class SupervisedModel(BaseModel):
         """
         One test step in PytorchLightning.
         You should not have to modify this.
-        For more information, see `pytorch_lightning.validation_step`.
         """
         return self.validation_step(batch, batch_id, split='test')
 
@@ -167,7 +166,6 @@ class SupervisedModel(BaseModel):
         """
         One prediction step in PytorchLightning.
         You should not have to modify this.
-        For more information, see `pytorch_lightning.prediction_step`.
         """
         feat = self.featurize(batch)
         out = self.infer(feat, batch)
@@ -178,7 +176,6 @@ class SupervisedModel(BaseModel):
         """
         One validation step in PytorchLightning.
         You should not have to modify this.
-        For more information, see `pytorch_lightning.validation_step`.
 
         A core difference here is that Wrangl will
         1. compute metrics automatically
