@@ -20,6 +20,11 @@ To train using Slurm via the Slurm launcher (settings in `conf/hydra/launcher/sl
 python train.py --multirun hydra/launcher=slurm hydra.launcher.partition=<name of your partition>
 ```
 
+For Vector, you might want to add
+```
++hydra.launcher.qos=long
+```
+
 ## Git
 To track code changes on a run-to-run basis:
 
