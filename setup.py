@@ -26,7 +26,7 @@ packages = find_packages(exclude=['contrib', 'docs', 'tests']) + find_namespace_
 
 setup(
     name='wrangl',
-    version='0.0.9',
+    version='0.0.10',
 
     python_requires='>3.7',
 
