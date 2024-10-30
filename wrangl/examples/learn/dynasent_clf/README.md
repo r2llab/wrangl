@@ -20,9 +20,9 @@ To train using Slurm via the Slurm launcher (settings in `conf/hydra/launcher/sl
 python train.py --multirun hydra/launcher=slurm hydra.launcher.partition=<name of your partition>
 ```
 
-For Vector, you might want to add
+For Vector, you might want to use
 ```
-+hydra.launcher.qos=long
+hydra.launcher.partition=rtx6000 +hydra.launcher.qos=long hydra.launcher.timeout_min=2880 devices=1
 ```
 
 ## Git
