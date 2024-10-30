@@ -48,7 +48,7 @@ We'll also drop the learning rate a bit since we'll be finetuning a pretrained L
 ```yaml
 # conf/default.yaml
 ...
-learning_rate: 0.00001
+    lr: 0.00001
 ...
 ftrain: '${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-train.jsonl'
 feval: '${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-dev.jsonl'
