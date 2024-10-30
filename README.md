@@ -31,6 +31,6 @@ pip install wrangl
 
 ## Usage
 
-See [the documentation](https://wrangl.pages.dev) for how to use Wrangl.
+See [the documentation](https://r2llab.github.io/wrangl) for how to use Wrangl.
 Examples of projects using Wrangl are found in `wrangl.examples`.
 In particular `wrangl.examples.learn.xor_clf` shows an example of using Wrangl to quickly set up a supervised classification task.
