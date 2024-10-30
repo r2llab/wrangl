@@ -122,3 +122,6 @@ python train.py devices=1 git.enable=true
 Here is the validation accuracy across steps, logged onto S3:
 
 ![validation curve](https://github.com/r2llab/wrangl/raw/main/wrangl/examples/learn/dynasent_clf/static/step_vs_val_acc.jpg)
+
+For more help regarding Hydra, see [here](https://hydra.cc/).
+Specific guide on sweeping jobs can be found [here](https://hydra.cc/docs/tutorials/basic/running_your_app/multi-run/).
