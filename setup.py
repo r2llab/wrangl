@@ -22,6 +22,8 @@ def parse_requirements(filename):
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+packages = find_packages(exclude=['contrib', 'docs', 'tests']) + find_namespace_packages(include=["hydra_plugins.*"])
+
 setup(
     name='wrangl',
     version='0.0.9',
@@ -66,7 +68,7 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']) + find_namespace_packages(include=["hydra_plugins.*"]),
+    packages=packages,
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's

@@ -32,7 +32,7 @@ jobs:
         python -m wrangl.interactive.cmd autotest
     - name: Build docs
       run: |
-        WRANGL_DOCS_HOST=https://github.com/vzhong/wrangl/blob/main/wrangl/ python -m wrangl.interactive.cmd autodoc
+        WRANGL_DOCS_HOST=https://github.com/r2llab/wrangl/blob/main/wrangl/ python -m wrangl.interactive.cmd autodoc
     - name: Deploy docs
       uses: peaceiris/actions-gh-pages@v3
       with:
