@@ -1,6 +1,6 @@
-# Sentiment classifier
+# Dynasent CLF
 
-This example trains a Sentiment classifier based on BERT.
+This example trains a sentence sentiment classifier.
 
 ```bash
 git clone https://github.com/r2llab/wrangl
@@ -37,4 +37,4 @@ To log results onto Wandb (assuming your `wandb` user is your current `$USER`, i
 python train.py wandb.enable=true
 ```
 
-[Here is an example](https://wandb.ai/vzhong/wrangl-examples-xor_clf) of the Wandb run for this job.
+[Here is an example](https://wandb.ai/vzhong/wrangl-examples-dynasent_clf) of the Wandb run for this job.

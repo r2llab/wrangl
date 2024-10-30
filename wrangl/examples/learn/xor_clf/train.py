@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import hydra
-import torch
 import random
 import logging
 from wrangl.learn import SupervisedModel
@@ -20,14 +19,14 @@ def generate_dataset(n, seed=0):
     for _ in range(n):
         raw = dict(x=rng.uniform(-1, 1), y=rng.uniform(-1, 1))
         raw.update(dict(
-            feat=torch.tensor([raw['x'], raw['y']], dtype=torch.float32),
+            feat=[raw['x'], raw['y']],
             label=1 if raw['x'] > 0 and raw['y'] > 0 else 0,
         ))
         dataset.append(raw)
     return dataset
 
 
-@hydra.main(config_path='conf', config_name='default')
+@hydra.main(config_path='conf', config_name='default', version_base='1.1')
 def main(cfg):
     Model = SupervisedModel.load_model_class(cfg.model)
     train = generate_dataset(10000)

@@ -1,38 +1,39 @@
 #!/usr/bin/env python
-import ray
 import json
 import hydra
+import random
 import logging
 from wrangl.learn import SupervisedModel
-from wrangl.data import IterableDataset, Processor
+from torch.utils.data import Dataset
 
 
 logger = logging.getLogger(__name__)
 
 
-@ray.remote
-class MyProcessor(Processor):
-
-    def process(self, row):
-        return dict(sent=row['sentence'], label_text=row['gold_label'], label_idx=['positive', 'neutral', 'negative'].index(row['gold_label']))
+class MyDataset(list, Dataset):
+    pass
 
 
-def load_data(fname):
-    data = []
+def generate_dataset(fname):
+    dataset = MyDataset()
     with open(fname) as f:
         for line in f:
             row = json.loads(line)
             if row['gold_label'] not in {None, 'mixed'}:
-                data.append(row)
-    return data
+                row.update(dict(
+                    sent=row['sentence'],
+                    label_text=row['gold_label'],
+                    label_idx=['positive', 'neutral', 'negative'].index(row['gold_label'])
+                ))
+                dataset.append(row)
+    return dataset
 
 
-@hydra.main(config_path='conf', config_name='default')
+@hydra.main(config_path='conf', config_name='default', version_base='1.1')
 def main(cfg):
     Model = SupervisedModel.load_model_class(cfg.model)
-    pool = ray.util.ActorPool([MyProcessor.remote() for _ in range(cfg.num_workers)])
-    train = IterableDataset(load_data(cfg.ftrain), pool=pool, shuffle=True)
-    val = IterableDataset(load_data(cfg.feval), pool=pool)
+    train = generate_dataset(cfg.ftrain)
+    val = generate_dataset(cfg.feval)
     Model.run_train_test(cfg, train, val)
 
 

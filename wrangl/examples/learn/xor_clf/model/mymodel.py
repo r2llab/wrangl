@@ -1,6 +1,7 @@
-from wrangl.learn import SupervisedModel, metrics as M
+import torch
 from torch import nn
 from torch.nn import functional as F
+from wrangl.learn import SupervisedModel, metrics as M
 
 
 class Model(SupervisedModel):
@@ -21,9 +22,12 @@ class Model(SupervisedModel):
 
         Alternatively you may want to set `collate_fn: "ignore"` in your config and use `featurize` to convert raw examples into features.
         """
-        return batch
+        return dict(
+            feat=torch.tensor([x['feat'] for x in batch], dtype=torch.float32, device=self.device),
+            label=torch.tensor([x['y'] for x in batch], dtype=torch.long, device=self.device),
+        )
 
-    def compute_metrics(self, pred: list, gold: list) -> dict:
+    def compute_metrics(self, pred: list, gold: list, batch: list) -> dict:
         return self.acc(pred, gold)
 
     def compute_loss(self, out, feat, batch):

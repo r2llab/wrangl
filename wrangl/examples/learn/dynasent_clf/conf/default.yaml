@@ -11,14 +11,17 @@ early_stopping:
     mode: 'max'
 optim:
   params:
-    lr: 0.00001
-gpus: 0
+    lr: 0.001
+devices: 0
 batch_size: 100
-collate_fn: 'auto'  # use 'ignore' to pass an identity collate and define featurize instead
+collate_fn: 'ignore'  # use 'ignore' to pass an identity collate and define featurize instead
 max_steps: 1_000
 log_every_n_steps: 100
 val_check_interval: 100
 val_sample_size: 100
+ftrain: '${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-train.jsonl'
+feval: '${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-dev.jsonl'
+lm: bert-base-uncased
 
 
 ##########
@@ -26,13 +29,3 @@ val_sample_size: 100
 ##########
 model: 'mymodel'
 project: 'wrangl-examples-dynasent_clf'
-
-###########
-# params
-###########
-dhid: 300
-
-ftrain: '${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-train.jsonl'
-feval: '${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-dev.jsonl'
-num_workers: 4
-lm: 'bert-base-uncased'

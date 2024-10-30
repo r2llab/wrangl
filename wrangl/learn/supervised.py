@@ -290,10 +290,10 @@ class SupervisedModel(BaseModel):
             trainer.fit(model, train_loader, eval_loader, ckpt_path=ckpt_path)
 
         model = cls.load_from_checkpoint(os.path.join(dout, 'last.ckpt'))
-        result = trainer.test(model, eval_loader, verbose=True, test=False)
+        result = trainer.predict(model, eval_loader)
         with open(os.path.join(dout, 'eval_pred.json'), 'wt') as f:
             json.dump(result, f, indent=2)
-        result = trainer.test(model, eval_loader, verbose=True, test=True)
+        result = trainer.test(model, eval_loader, verbose=True)
         with open(os.path.join(dout, 'eval_test.json'), 'wt') as f:
             json.dump(result, f, indent=2)
         logger.info('Finished!')
