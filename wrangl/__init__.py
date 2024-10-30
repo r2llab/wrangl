@@ -4,4 +4,4 @@
 .. include:: examples/learn/README.md
 """
 from .data import *
-__all__ = ['cloud', 'data', 'learn', 'examples']
+__all__ = ['data', 'learn', 'examples']

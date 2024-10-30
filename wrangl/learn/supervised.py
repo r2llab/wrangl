@@ -11,7 +11,7 @@ import pytorch_lightning as pl
 from typing import List
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
-from .callbacks import WandbTableCallback, S3Callback, GitCallback
+from .callbacks import WandbTableCallback, GitCallback
 from .metrics import Accuracy
 from .model import BaseModel
 from pytorch_lightning import callbacks as C
@@ -33,8 +33,6 @@ class SupervisedModel(BaseModel):
             callbacks.append(GitCallback())
         if self.hparams.wandb.enable:
             callbacks.append(WandbTableCallback())
-        if self.hparams.s3.enable:
-            callbacks.append(S3Callback(self.hparams.s3))
         return callbacks
 
     def featurize(self, batch: list):
@@ -185,7 +183,7 @@ class SupervisedModel(BaseModel):
         A core difference here is that Wrangl will
         1. compute metrics automatically
         2. extract example contexts, predictions, and ground truths
-        3. save predictions to disk (and upload to S3, Wandb etc.) for debugging
+        3. save predictions to disk (and upload to Wandb etc.) for debugging
         """
         feat = self.featurize(batch)
         context = self.extract_context(feat, batch)

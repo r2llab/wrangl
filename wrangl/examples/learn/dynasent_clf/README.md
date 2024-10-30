@@ -3,7 +3,7 @@
 This example trains a Sentiment classifier based on BERT.
 
 ```bash
-git clone https://github.com/vzhong/wrangl
+git clone https://github.com/r2llab/wrangl
 cd wrangl/wrangl/examples/learn/dynasent_clf
 ```
 

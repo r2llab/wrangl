@@ -24,7 +24,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='wrangl',
-    version='0.0.8',
+    version='0.0.9',
 
     python_requires='>3.7',
 
@@ -33,7 +33,7 @@ setup(
     long_description_content_type='text/markdown',
 
     # The project's main homepage.
-    url='https://github.com/vzhong/wrangl',
+    url='https://github.com/r2llab/wrangl',
 
     # Author details
     author='Victor Zhong',
@@ -80,7 +80,6 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['check-manifest', 'pdoc', 'twine'],
-        'rl': ['moolib', 'gym', 'coolname'],
         'test': ['coverage', 'nose'],
     },
 

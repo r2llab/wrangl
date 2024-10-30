@@ -3,7 +3,7 @@
 This example trains a XOR classifier.
 
 ```bash
-git clone https://github.com/vzhong/wrangl
+git clone https://github.com/r2llab/wrangl
 cd wrangl/wrangl/examples/learn/xor_clf
 ```
 

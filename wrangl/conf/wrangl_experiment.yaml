@@ -29,16 +29,6 @@ wandb:  # wandb settings
   name: '${name}'
   entity: '${oc.env:USER}'
   dir: '${dproject}'
-s3:  # s3 settings
-  enable: false
-  fcredentials: 'not set'
-  project_id: '${project}'
-  experiment_id: '${name}'
-  plot:
-    x: '${time_key}'
-    y: '${early_stopping.monitor}'
-  checkpoint: true
-  pred_samples: true
 time_key: 'step'
 
 ##########

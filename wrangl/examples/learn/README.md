@@ -106,7 +106,7 @@ python train.py gpus=1 git.enable=true s3.enable=true s3.fcredentials=/data/home
 
 Here is the validation accuracy across steps, logged onto S3:
 
-![validation curve](https://github.com/vzhong/wrangl/raw/main/wrangl/examples/learn/dynasent_clf/static/step_vs_val_acc.jpg)
+![validation curve](https://github.com/r2llab/wrangl/raw/main/wrangl/examples/learn/dynasent_clf/static/step_vs_val_acc.jpg)
 
 
 ### Reinforcement learning from scratch

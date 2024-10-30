@@ -1,6 +1,5 @@
 ray
 ujson
-torch
 plotille
 pandas
 pdoc

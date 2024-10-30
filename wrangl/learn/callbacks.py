@@ -9,7 +9,6 @@ import wandb
 import torch
 import tempfile
 import pytorch_lightning as pl
-from ..cloud import S3Client
 from hydra.utils import get_original_cwd
 
 
@@ -28,41 +27,6 @@ class WandbTableCallback(pl.Callback):
         for context, gen, gold in model.pred_samples:
             table.add_data(repr(context), repr(gen), repr(gold))
         wandb.log(dict(gen=table))
-
-
-class S3Callback(pl.Callback):
-    """
-    Uploads experiment config, git diffs, logs, best checkpoints, and plots to S3.
-    """
-
-    def __init__(self, cfg):
-        super().__init__()
-        self.cfg = cfg
-        self.client = S3Client(fcredentials=cfg.fcredentials)
-
-    def on_save_checkpoint(self, trainer, model, checkpoint):
-        if self.cfg.checkpoint:
-            with tempfile.NamedTemporaryFile('w') as f:
-                torch.save(checkpoint, f.name)
-                f.flush()
-                self.client.upload_file(self.cfg.project_id, self.cfg.experiment_id, 'last.ckpt', f.name, content_type='application/pytorch')
-
-    def on_validation_end(self, trainer, model):
-        self.client.upload_experiment(os.getcwd())
-        if self.cfg.plot:
-            self.client.plot_experiment(
-                project_id=self.cfg.project_id,
-                experiment_id=self.cfg.experiment_id,
-                **self.cfg.plot
-            )
-
-        for fname in ['pred_samples.json']:
-            if os.path.isfile(fname):
-                self.client.upload_file(self.cfg.project_id, self.cfg.experiment_id, fname, fname, content_type='text/plain')
-
-    def on_fit_start(self, trainer, model):
-        for fname in glob.glob('git.*'):
-            self.client.upload_file(self.cfg.project_id, self.cfg.experiment_id, fname, fname, content_type='text/plain')
 
 
 class GitCallback(pl.Callback):
