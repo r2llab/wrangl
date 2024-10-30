@@ -95,12 +95,12 @@
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">os</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">import</span> <span class="nn">importlib</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">pytorch_lightning</span> <span class="k">as</span> <span class="nn">pl</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">lightning</span> <span class="k">as</span> <span class="nn">L</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">optim</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">hydra.utils</span> <span class="kn">import</span> <span class="n">get_original_cwd</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="nd">@classmethod</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span> <span class="nf">load_model_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">model_dir</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -171,13 +171,13 @@
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">BaseModel</span><wbr>(<span class="base">pytorch_lightning.core.module.LightningModule</span>):
+    <span class="name">BaseModel</span><wbr>(<span class="base">lightning.pytorch.core.module.LightningModule</span>):
 
                 <label class="view-source-button" for="BaseModel-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#BaseModel"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BaseModel-9"><a href="#BaseModel-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BaseModel-9"><a href="#BaseModel-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
 </span><span id="BaseModel-10"><a href="#BaseModel-10"><span class="linenos">10</span></a>
 </span><span id="BaseModel-11"><a href="#BaseModel-11"><span class="linenos">11</span></a>    <span class="nd">@classmethod</span>
 </span><span id="BaseModel-12"><a href="#BaseModel-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">load_model_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">model_dir</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

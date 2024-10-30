@@ -56,7 +56,6 @@
 
             <h2>Submodules</h2>
             <ul>
-                    <li><a href="wrangl/data.html">data</a></li>
                     <li><a href="wrangl/learn.html">learn</a></li>
                     <li><a href="wrangl/examples.html">examples</a></li>
             </ul>
@@ -81,20 +80,20 @@ wrangl    </h1>
 
 <p><a href="https://github.com/r2llab/wrangl/actions/workflows/test.yml"><img src="https://github.com/r2llab/wrangl/actions/workflows/test.yml/badge.svg" alt="Tests" /></a></p>
 
-<p>Parallel data preprocessing and fast experiments for NLP and ML.
+<p>Fast experiments for NLP and ML.
 See <a href="https://r2llab.github.io/wrangl/">docs here</a>.</p>
 
 <h2 id="why">Why?</h2>
 
 <p>I built this library to prototype ideas quickly.
-In essence it combines <a href="https://hydra.cc">Hydra</a>, <a href="https://www.pytorchlightning.ai">Pytorch Lightning</a>, and <a href="https://ray.io">Ray</a> for some fast data processing and supervised learning.
+In essence it combines <a href="https://hydra.cc">Hydra</a> and <a href="https://www.pytorchlightning.ai">Pytorch Lightning</a> for supervised learning.
 The following are supported with command line or config tweaks (e.g. no additional boilerplate code):</p>
 
 <ul>
 <li>checkpointing</li>
 <li>early stopping</li>
 <li>auto git diffs</li>
-<li>logging to S3 (along with auto-generated seaborn plot), wandb</li>
+<li>logging to  wandb</li>
 <li>Slurm launcher</li>
 </ul>
 
@@ -115,48 +114,7 @@ pip<span class="w"> </span>install<span class="w"> </span>wrangl
 
 <p>See <a href="https://wrangl.pages.dev">the documentation</a> for how to use Wrangl.
 Examples of projects using Wrangl are found in <code><a href="wrangl/examples.html">wrangl.examples</a></code>.
-In particular <code><a href="wrangl/examples/learn/xor_clf.html">wrangl.examples.learn.xor_clf</a></code> shows an example of using Wrangl to quickly set up a supervised classification task.
-For parallel data preprocessing <code><a href="wrangl/examples/preprocess/using_stanza.html">wrangl.examples.preprocess.using_stanza</a></code> shows an example of using Stanford NLP Stanza to parse text in parallel across CPU cores.</p>
-
-<h3 id="preprocess-data-in-parallel">Preprocess data in parallel:</h3>
-
-<p>You can find the following examples of how to use Wrangl for parallel data processing in <code><a href="wrangl/examples/preprocess.html">wrangl.examples.preprocess</a></code>:</p>
-
-<ul>
-<li>text strings: <code><a href="wrangl/examples/preprocess/repeat_string.html">wrangl.examples.preprocess.repeat_string</a></code></li>
-<li>multiple BZip2 compressed JSONL files: <code><a href="wrangl/examples/preprocess/jsonl_files.html">wrangl.examples.preprocess.jsonl_files</a></code></li>
-<li>query output from SQLite database: <code><a href="wrangl/examples/preprocess/sql_db.html">wrangl.examples.preprocess.sql_db</a></code></li>
-<li>parsing using StanfordNLP Stanza: <code><a href="wrangl/examples/preprocess/using_stanza.html">wrangl.examples.preprocess.using_stanza</a></code></li>
-</ul>
-
-<p>For example, here is how to preprocess some lines of text (the Python Zen poem) in parallel using Stanford Stanza.</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="kn">import</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">ray</span><span class="o">,</span> <span class="nn">tqdm</span><span class="o">,</span> <span class="nn">stanza</span><span class="o">,</span> <span class="nn">contextlib</span>
-<span class="kn">from</span> <span class="nn"><a href="wrangl/data.html">wrangl.data</a></span> <span class="kn">import</span> <span class="n">IterableDataset</span><span class="p">,</span> <span class="n">Processor</span>
-
-<span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span>
-<span class="k">class</span> <span class="nc">MyProcessor</span><span class="p">(</span><span class="n">Processor</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlp</span> <span class="o">=</span> <span class="n">stanza</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="s1">&#39;en&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlp</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1"># we will use Python&#39;s Zen poem as an example</span>
-    <span class="n">zen</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
-    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">redirect_stdout</span><span class="p">(</span><span class="n">zen</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">this</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">zen</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()]</span> <span class="o">*</span> <span class="mi">20</span>
-    <span class="n">pool</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">ActorPool</span><span class="p">([</span><span class="n">MyProcessor</span><span class="o">.</span><span class="n">remote</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
-
-    <span class="c1"># parallel</span>
-    <span class="n">loader</span> <span class="o">=</span> <span class="n">IterableDataset</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pool</span><span class="p">,</span> <span class="n">cache_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">processed</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;parallel ordered&#39;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)))</span>
-</code></pre>
-</div>
+In particular <code><a href="wrangl/examples/learn/xor_clf.html">wrangl.examples.learn.xor_clf</a></code> shows an example of using Wrangl to quickly set up a supervised classification task.</p>
 
 <h3 id="supervised-learning-from-scratch">Supervised learning from scratch</h3>
 
@@ -180,28 +138,26 @@ mv<span class="w"> </span>dynasent-v1.1<span class="w"> </span>data
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="c1"># train.py</span>
-<span class="c1"># ...</span>
-<span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span>
-<span class="k">class</span> <span class="nc">MyProcessor</span><span class="p">(</span><span class="n">Processor</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sent</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;sentence&#39;</span><span class="p">],</span> <span class="n">label_text</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;gold_label&#39;</span><span class="p">],</span> <span class="n">label_idx</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">,</span> <span class="s1">&#39;neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;negative&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;gold_label&#39;</span><span class="p">]))</span>
-
-
-<span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">generate_dataset</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">MyDataset</span><span class="p">()</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">row</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;gold_label&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;mixed&#39;</span><span class="p">}:</span>
-                <span class="k">yield</span> <span class="n">row</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">sent</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;sentence&#39;</span><span class="p">],</span>
+                    <span class="n">label_text</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;gold_label&#39;</span><span class="p">],</span>
+                    <span class="n">label_idx</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;positive&#39;</span><span class="p">,</span> <span class="s1">&#39;neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;negative&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;gold_label&#39;</span><span class="p">])</span>
+                <span class="p">))</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataset</span>
 
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">config_path</span><span class="o">=</span><span class="s1">&#39;conf&#39;</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
     <span class="n">Model</span> <span class="o">=</span> <span class="n">SupervisedModel</span><span class="o">.</span><span class="n">load_model_class</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-    <span class="n">pool</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">ActorPool</span><span class="p">([</span><span class="n">MyProcessor</span><span class="o">.</span><span class="n">remote</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)])</span>
-    <span class="n">train</span> <span class="o">=</span> <span class="n">IterableDataset</span><span class="p">(</span><span class="n">load_data</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">ftrain</span><span class="p">),</span> <span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="n">IterableDataset</span><span class="p">(</span><span class="n">load_data</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">feval</span><span class="p">),</span> <span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">)</span>
+    <span class="n">train</span> <span class="o">=</span> <span class="n">generate_dataset</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">ftrain</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">generate_dataset</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">fval</span><span class="p">)</span>
     <span class="n">Model</span><span class="o">.</span><span class="n">run_train_test</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 </code></pre>
 </div>
@@ -212,7 +168,7 @@ We'll also drop the learning rate a bit since we'll be finetuning a pretrained L
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="c1"># conf/default.yaml</span>
 <span class="nn">...</span>
-<span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.00001</span>
+<span class="w">    </span><span class="nt">lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.00001</span>
 <span class="nn">...</span>
 <span class="nt">ftrain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-train.jsonl&#39;</span>
 <span class="nt">feval</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-dev.jsonl&#39;</span>
@@ -246,39 +202,52 @@ We'll also drop the learning rate a bit since we'll be finetuning a pretrained L
 
 <span class="o">...</span>
 
-    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">feat</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">feat</span><span class="p">[</span><span class="s1">&#39;label_idx&#39;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">featurize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a batch of examples to features.</span>
+<span class="sd">        By default this returns the batch as is.</span>
+
+<span class="sd">        Alternatively you may want to set `collate_fn: &quot;ignore&quot;` in your config and use `featurize` to convert raw examples into features.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">sent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">batch_encode_plus</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span>
+                <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;max_length&#39;</span><span class="p">,</span>
+                <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">max_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+                <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;label_idx&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+        <span class="p">)</span>
+
+<span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">extract_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ex</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">extract_pred</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">feat</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
 
     <span class="k">def</span> <span class="nf">extract_gold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;label_text&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;label_text&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ex</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
-        <span class="n">sent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">batch_encode_plus</span><span class="p">(</span><span class="n">feat</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">],</span> <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;max_length&#39;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lm</span><span class="p">(</span><span class="o">**</span><span class="n">sent</span><span class="p">)</span><span class="o">.</span><span class="n">last_hidden_state</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lm</span><span class="p">(</span><span class="o">**</span><span class="n">feat</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">last_hidden_state</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># use the [CLS] token for classification</span>
 </code></pre>
 </div>
 
-<p>Let's train this and save its output to S3 (you can delete the S3 flags if you don't have that set up).</p>
+<p>Let's train this.</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code>python<span class="w"> </span>train.py<span class="w"> </span><span class="nv">gpus</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>git.enable<span class="o">=</span><span class="nb">true</span><span class="w"> </span>s3.enable<span class="o">=</span><span class="nb">true</span><span class="w"> </span>s3.fcredentials<span class="o">=</span>/data/home/vzhong/wrangl_sync/s3.json
+<pre><span></span><code>python<span class="w"> </span>train.py<span class="w"> </span><span class="nv">devices</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>git.enable<span class="o">=</span><span class="nb">true</span>
 </code></pre>
 </div>
 
 <p>Here is the validation accuracy across steps, logged onto S3:</p>
 
 <p><img src="https://github.com/r2llab/wrangl/raw/main/wrangl/examples/learn/dynasent_clf/static/step_vs_val_acc.jpg" alt="validation curve" /></p>
-
-<h3 id="reinforcement-learning-from-scratch">Reinforcement learning from scratch</h3>
-
-<p>Example of RL can be found in <code>wrangl.examples.learn.atari_rl</code>.</p>
 </div>
 
                         <input id="mod-wrangl-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -287,11 +256,9 @@ We'll also drop the learning rate a bit since we'll be finetuning a pretrained L
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">2</span></a><span class="sd">.. include:: ../README.md</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a><span class="sd">.. include:: examples/preprocess/README.md</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">4</span></a><span class="sd">.. include:: examples/learn/README.md</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">6</span></a><span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="o">*</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">7</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;learn&#39;</span><span class="p">,</span> <span class="s1">&#39;examples&#39;</span><span class="p">]</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a><span class="sd">.. include:: examples/learn/README.md</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">4</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;learn&#39;</span><span class="p">,</span> <span class="s1">&#39;examples&#39;</span><span class="p">]</span>
 </span></pre></div>
 
 
