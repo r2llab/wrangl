@@ -3,7 +3,7 @@
 [![Tests](https://github.com/r2llab/wrangl/actions/workflows/test.yml/badge.svg)](https://github.com/r2llab/wrangl/actions/workflows/test.yml)
 
 Parallel data preprocessing and fast experiments for NLP and ML.
-See [docs here](https://www.victorzhong.com/wrangl).
+See [docs here](https://r2llab.github.io/wrangl/).
 
 ## Why?
 I built this library to prototype ideas quickly.
