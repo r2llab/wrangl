@@ -17,7 +17,7 @@ batch_size: 100
 collate_fn: 'ignore'  # use 'ignore' to pass an identity collate and define featurize instead
 max_steps: 1_000
 log_every_n_steps: 100
-val_check_interval: 100
+val_check_interval: 0.5
 val_sample_size: 100
 ftrain: '${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-train.jsonl'
 feval: '${oc.env:PWD}/data/dynasent-v1.1-round01-yelp-dev.jsonl'
