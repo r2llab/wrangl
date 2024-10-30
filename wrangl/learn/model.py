@@ -1,11 +1,11 @@
 import os
 import importlib
-import pytorch_lightning as pl
+import lightning as L
 from torch import optim
 from hydra.utils import get_original_cwd
 
 
-class BaseModel(pl.LightningModule):
+class BaseModel(L.LightningModule):
 
     @classmethod
     def load_model_class(cls, model_name, model_dir='model', root_dir=None):

@@ -7,15 +7,15 @@ import torch
 import random
 import logging
 import pathlib
-import pytorch_lightning as pl
+import lightning as L
 from typing import List
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
 from .callbacks import WandbTableCallback, GitCallback
 from .metrics import Accuracy
 from .model import BaseModel
-from pytorch_lightning import callbacks as C
-from pytorch_lightning.loggers import WandbLogger, CSVLogger
+from lightning.pytorch import callbacks as C
+from lightning.pytorch.loggers import WandbLogger, CSVLogger
 
 
 class SupervisedModel(BaseModel):
@@ -211,7 +211,7 @@ class SupervisedModel(BaseModel):
             json.dump(data, f, indent=2)
 
     @classmethod
-    def run_train_test(cls, cfg: OmegaConf, train_dataset: torch.utils.data.DataLoader, eval_dataset: torch.utils.data.DataLoader, model_kwargs=None):
+    def run_train_test(cls, cfg: OmegaConf, train_dataset: torch.utils.data.Dataset, eval_dataset: torch.utils.data.Dataset, model_kwargs=None):
         """
         Creates a model according to config and trains/evaluates it.
 
@@ -229,7 +229,7 @@ class SupervisedModel(BaseModel):
             - callbacks (including an always on CSV logger)
         """
         model_kwargs = model_kwargs or {}
-        pl.utilities.seed.seed_everything(seed=cfg.seed, workers=True)
+        L.seed_everything(seed=cfg.seed, workers=True)
         dout = os.getcwd()
 
         logger = logging.getLogger(name='{}:train_test'.format(cls.__name__))
@@ -266,13 +266,10 @@ class SupervisedModel(BaseModel):
         train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, collate_fn=collate_fn)
         eval_loader = DataLoader(eval_dataset, batch_size=cfg.val_batch_size, collate_fn=collate_fn)
 
-        trainer = pl.Trainer(
+        trainer = L.Trainer(
             precision=cfg.precision,
             strategy=cfg.strategy,
-            gpus=cfg.gpus,
-            auto_lr_find=False,
-            auto_scale_batch_size=False,
-            auto_select_gpus=cfg.gpus > 0,
+            devices=cfg.devices,
             benchmark=True,
             default_root_dir=dout,
             gradient_clip_val=cfg.grad_clip_norm,
@@ -328,13 +325,10 @@ class SupervisedModel(BaseModel):
             collate_fn = cls.collate_fn
         eval_loader = DataLoader(eval_dataset, batch_size=cfg.batch_size, collate_fn=collate_fn)
 
-        trainer = pl.Trainer(
+        trainer = L.Trainer(
             precision=cfg.precision,
             strategy=cfg.strategy,
-            gpus=cfg.gpus,
-            auto_lr_find=False,
-            auto_scale_batch_size=False,
-            auto_select_gpus=cfg.gpus > 0,
+            devices=cfg.devices,
             benchmark=True,
         )
         if test:

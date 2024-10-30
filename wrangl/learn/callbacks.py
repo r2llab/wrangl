@@ -2,17 +2,13 @@
 Callbacks that can be used during PytorchLightning training.
 """
 
-import os
-import glob
 import json
 import wandb
-import torch
-import tempfile
-import pytorch_lightning as pl
 from hydra.utils import get_original_cwd
+from lightning.pytorch.callbacks import Callback
 
 
-class WandbTableCallback(pl.Callback):
+class WandbTableCallback(Callback):
     """
     Uploads sample predictions to Wandb.
     """
@@ -29,7 +25,7 @@ class WandbTableCallback(pl.Callback):
         wandb.log(dict(gen=table))
 
 
-class GitCallback(pl.Callback):
+class GitCallback(Callback):
     """
     Dumps git diffs to work directory.
     """
