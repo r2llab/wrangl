@@ -59,6 +59,7 @@ val_check_interval: 100
 flush_logs_every_n_steps: '${log_every_n_steps}'
 test_only: false
 autoresume: false
+use_slurm_checkpoint_dout: false  # set to True to use /checkpoint/$USER/$SLURM_JOB_ID for storage
 ckpt_path: 'latest.ckpt'
 val_sample_size: 100
 

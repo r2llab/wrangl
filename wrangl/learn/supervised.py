@@ -228,6 +228,8 @@ class SupervisedModel(BaseModel):
         model_kwargs = model_kwargs or {}
         L.seed_everything(seed=cfg.seed, workers=True)
         dout = os.getcwd()
+        if cfg.use_slurm_checkpoint_dout:
+            dout = '/checkpoint/{}/{}'.format(os.environ['USER'], os.environ['SLURM_JOB_ID'])
 
         logger = logging.getLogger(name='{}:train_test'.format(cls.__name__))
         logger.info('Logging to {}'.format(dout))
