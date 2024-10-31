@@ -286,9 +286,12 @@ class SupervisedModel(BaseModel):
                 ckpt_path = os.path.join(dout, 'last.ckpt')
                 if not os.path.isfile(ckpt_path):
                     ckpt_path = None
+            logger.info('Fitting model to {}'.format(ckpt_path))
             trainer.fit(model, train_loader, eval_loader, ckpt_path=ckpt_path)
 
+        logger.info('Loading checkpoint from {}'.format(ckpt_path))
         model = cls.load_from_checkpoint(os.path.join(dout, 'last.ckpt'))
+        logger.info('Generating predictions to {}'.format(dout))
         result = trainer.predict(model, eval_loader)
         with open(os.path.join(dout, 'eval_pred.json'), 'wt') as f:
             json.dump(result, f, indent=2)
