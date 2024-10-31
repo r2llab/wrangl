@@ -5,6 +5,6 @@ defaults:
 ##########
 # training
 ##########
-precision: 16
+precision: 16-mixed
 limit_val_batches: 1.0
 strategy: auto
