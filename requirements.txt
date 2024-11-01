@@ -8,3 +8,5 @@ hydra-submitit-launcher
 lightning
 gitpython
 seaborn
+joblib
+ujson
